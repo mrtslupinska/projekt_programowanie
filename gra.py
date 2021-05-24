@@ -1,10 +1,11 @@
 import pygame
 import random
+import math
 
 pygame.init()
 pygame.display.set_caption("Cupola")
 
-screen_width = 800
+screen_width = 900
 screen_height = 500
 #boki ekranu gry - czyli 500-50
 margin = 50
@@ -12,21 +13,39 @@ margin = 50
 screen = pygame.display.set_mode((screen_width, screen_height))
 font = pygame.font.Font(pygame.font.get_default_font(), 30)
 
-background = pygame.image.load('/Users/marta/Desktop/gra/lidl.jpg')
+background = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/lidl.jpg')
 
-#słownik można zmenić na klasy
-player = {
-        "image": pygame.image.load('/Users/marta/Desktop/gra/trolley.png'),
+
+#klasy player
+class player():
+    def __init__(self):
+        self.image = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/trolley.png')
         #obecna lokalizacja wozka i to ze pojawia sie na srodku na poczatku gry
-        "x": screen_width/2,
-        "y": screen_height-2*margin,
+        self.x = screen_width/2
+        self.y = screen_height-2*margin
         #predkosc z jaka porusza sie wozek
-        "speed": 0.5
-}
+        self.speed = 0.5
+
+    #definicja do zmieniania wartości x playera
+    def place_x(self,change):
+        self.x += change
+
+    #definicja do zmieniania wartości y playera
+    def place_y(self,change):
+        self.y += change
+
+    #definicja do zmieniania wartości speed playera
+    def speed_change(self,change):
+        self.speed += change
+
+#utworzony gracz z klasy
+active_player = player()
 
 #lista wgranych obrazkow
-fruit_imgs = [pygame.image.load(image) for image in ['/Users/marta/Desktop/gra/apple.png', '/Users/marta/Desktop/gra/banana.png']]
-sweets_imgs = [pygame.image.load(image) for image in ['/Users/marta/Desktop/gra/candy1.png', '/Users/marta/Desktop/gra/candy2.png']]
+fruit_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/programowanie/gra/apple.png',
+'/Users/bogna/Desktop/programowanie/gra/banana.png']]
+sweets_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/programowanie/gra/candy1.png',
+'/Users/bogna/Desktop/programowanie/gra/candy2.png']]
 
 #zwraca owoc albo cukierek
 def get_object(type="fruit"):
@@ -47,6 +66,11 @@ move_object = False
 
 player_movement = 0
 
+#obliczanie odległości wózka i owoców
+def distance(x1,y1,x2,y2):
+    distance = ((x1-y1)*(x1-y1)+(x2-y2)*(x2-y2))*1/2
+    return distance
+
 running = True
 while running:
 
@@ -59,24 +83,24 @@ while running:
         #w jaki sposob wozek ma sie ruszac
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                player_movement = -player["speed"]
+                player_movement = -active_player.speed
             if event.key == pygame.K_RIGHT:
-                player_movement = player["speed"]
+                player_movement = active_player.speed
         if event.type == pygame.KEYUP:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                 player_movement = 0
 
     # aktualizacja polozenia wozka w poziomie
-    player["x"] += player_movement
+    active_player.place_x(player_movement)
 
     #wozek nie wyjezdza poza ekran
-    if player["x"] <= 0:
-        player["x"] = 0
-    elif player["x"] >= screen_width-2*margin:
-        player["x"] = screen_width-2*margin
+    if active_player.x <= 0:
+        active_player.x = 0
+    elif active_player.x >= screen_width-2*margin:
+        active_player.x = screen_width-2*margin
 
     # przesuniecie wozka
-    screen.blit(player["image"], (player["x"], player["y"]))
+    screen.blit(active_player.image, (active_player.x,active_player.y))
 
     # losowosc renderowania owocow i cukierkow
     if new_object_time == 750:
@@ -102,12 +126,21 @@ while running:
         if object["y"] >= screen_height:
             lost.append(i)
 
+
     # usuwa owoce i cukierki, ktore sa poza ekranem z listy
     new_objects = []
     for i, object in enumerate(objects):
           if i not in lost:
               new_objects.append(object)
     objects = new_objects
+
+    #sprawdza, czy wózek pokrywa się z owocem
+    actual_distance = distance(object["x"], object["y"],active_player.x,active_player.y)
+    for i, object in enumerate(objects):
+        if actual_distance > 20:
+            object["x"] == 890
+            object["y"] == 10
+            screen.blit(object["image"], (object["x"], object["y"]))
 
     # zapobiega dalszemu przesuwaniu sie owocow i cukierkow
     move_object = False
