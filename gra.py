@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 pygame.init()
 pygame.display.set_caption("Cupola")
@@ -12,21 +13,39 @@ margin = 50
 screen = pygame.display.set_mode((screen_width, screen_height))
 font = pygame.font.Font(pygame.font.get_default_font(), 30)
 
-background = pygame.image.load('/Users/marta/Desktop/gra/lidl.jpg')
+background = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/lidl.jpg')
 
-#słownik można zmenić na klasy
-player = {
-        "image": pygame.image.load('/Users/marta/Desktop/gra/trolley.png'),
+
+#klasy player
+class player():
+    def __init__(self):
+        self.image = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/trolley.png')
         #obecna lokalizacja wozka i to ze pojawia sie na srodku na poczatku gry
-        "x": screen_width/2,
-        "y": screen_height-2*margin,
+        self.x = screen_width/2
+        self.y = screen_height-2*margin
         #predkosc z jaka porusza sie wozek
-        "speed": 0.5
-}
+        self.speed = 0.5
+
+    #definicja do zmieniania wartości x playera
+    def place_x(self,change):
+        self.x += change
+
+    #definicja do zmieniania wartości y playera
+    def place_y(self,change):
+        self.y += change
+
+    #definicja do zmieniania wartości speed playera
+    def speed(self,change):
+        self.speed += change
+
+#utworzony gracz z klasy
+active_player = player()
 
 #lista wgranych obrazkow
-fruit_imgs = [pygame.image.load(image) for image in ['/Users/marta/Desktop/gra/apple.png', '/Users/marta/Desktop/gra/banana.png']]
-sweets_imgs = [pygame.image.load(image) for image in ['/Users/marta/Desktop/gra/candy1.png', '/Users/marta/Desktop/gra/candy2.png']]
+fruit_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/programowanie/gra/apple.png',
+'/Users/bogna/Desktop/programowanie/gra/banana.png']]
+sweets_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/programowanie/gra/candy1.png',
+'/Users/bogna/Desktop/programowanie/gra/candy2.png']]
 
 #zwraca owoc albo cukierek
 def get_object(type="fruit"):
@@ -67,16 +86,16 @@ while running:
                 player_movement = 0
 
     # aktualizacja polozenia wozka w poziomie
-    player["x"] += player_movement
+    active_player.place_x(player_movement)
 
     #wozek nie wyjezdza poza ekran
-    if player["x"] <= 0:
-        player["x"] = 0
-    elif player["x"] >= screen_width-2*margin:
-        player["x"] = screen_width-2*margin
+    if active_player.x <= 0:
+        active_player.x = 0
+    elif active_player.x >= screen_width-2*margin:
+        active_player.x = screen_width-2*margin
 
     # przesuniecie wozka
-    screen.blit(player["image"], (player["x"], player["y"]))
+    screen.blit(active_player.image, (active_player.x,active_player.y))
 
     # losowosc renderowania owocow i cukierkow
     if new_object_time == 750:
@@ -111,6 +130,7 @@ while running:
 
     # zapobiega dalszemu przesuwaniu sie owocow i cukierkow
     move_object = False
+
 
     # inkrementacja czasu liczników
     new_object_time += 1
