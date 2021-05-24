@@ -35,7 +35,7 @@ class player():
         self.y += change
 
     #definicja do zmieniania wartości speed playera
-    def speed(self,change):
+    def speed_change(self,change):
         self.speed += change
 
 #utworzony gracz z klasy
@@ -78,9 +78,9 @@ while running:
         #w jaki sposob wozek ma sie ruszac
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                player_movement = -player["speed"]
+                player_movement = -active_player.speed
             if event.key == pygame.K_RIGHT:
-                player_movement = player["speed"]
+                player_movement = active_player.speed
         if event.type == pygame.KEYUP:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                 player_movement = 0
@@ -130,6 +130,14 @@ while running:
 
     # zapobiega dalszemu przesuwaniu sie owocow i cukierkow
     move_object = False
+
+
+    # inkrementacja czasu liczników
+    new_object_time += 1
+    move_object_time += 1
+
+    pygame.display.update()
+pygame.quit()
 
 
     # inkrementacja czasu liczników
