@@ -12,11 +12,11 @@ margin = 50
 screen = pygame.display.set_mode((screen_width, screen_height))
 font = pygame.font.Font(pygame.font.get_default_font(), 30)
 
-background = pygame.image.load('/Users/marta/Desktop/gra/lidl.jpg')
+background = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/lidl.jpg')
 
 #słownik można zmenić na klasy
 player = {
-        "image": pygame.image.load('/Users/marta/Desktop/gra/trolley.png'),
+        "image": pygame.image.load('/Users/bogna/Desktop/programowanie/gra/trolley.png'),
         #obecna lokalizacja wozka i to ze pojawia sie na srodku na poczatku gry
         "x": screen_width/2,
         "y": screen_height-2*margin,
@@ -25,8 +25,10 @@ player = {
 }
 
 #lista wgranych obrazkow
-fruit_imgs = [pygame.image.load(image) for image in ['/Users/marta/Desktop/gra/apple.png', '/Users/marta/Desktop/gra/banana.png']]
-sweets_imgs = [pygame.image.load(image) for image in ['/Users/marta/Desktop/gra/candy1.png', '/Users/marta/Desktop/gra/candy2.png']]
+fruit_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/programowanie/gra/apple.png',
+'/Users/bogna/Desktop/programowanie/gra/banana.png']]
+sweets_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/programowanie/gra/candy1.png',
+'/Users/bogna/Desktop/programowanie/gra/candy2.png']]
 
 #zwraca owoc albo cukierek
 def get_object(type="fruit"):
