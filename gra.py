@@ -47,7 +47,41 @@ fruit_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/progr
 sweets_imgs = [pygame.image.load(image) for image in ['/Users/bogna/Desktop/programowanie/gra/candy1.png',
 '/Users/bogna/Desktop/programowanie/gra/candy2.png']]
 
-#zwraca owoc albo cukierek
+#klasa dla wgranych obrazków
+class moving_objects():
+    def __init__(self):
+        self.apple = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/apple.png')
+        self.banana = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/banana.png')
+        self.candy1 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/candy1.png')
+        self.candy2 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/candy2.png')
+        self.list_of_objects = [[self.apple,self.banana],[self.candy1,self.candy2]]
+        self.speed = 5
+        self.x = random.randint(0+margin, screen_width-margin)
+        self.y = margin
+
+#losowanie spadających obiektów, punkty(wstępnie, do zmiany, nie są zwrócone)
+    def get_object(self):
+        points =0
+        random_number_first = random.randint(0,1)
+        random_number_second = random.randint(0,1)
+        flying = self.list_of_objects[random_number_first,random_number_second]
+        if random_number_first == 0:
+            points += 1
+        if random_number_second == 1:
+            points += -1
+        return flying
+
+    def speed(self):
+        return self.speed
+
+    def x(self):
+        return self.x
+
+    def y(self):
+        return self.y
+
+
+'''#zwraca owoc albo cukierek
 def get_object(type="fruit"):
     #lokalizacja owockow i cukierkow
     return {"image" : random.choice(fruit_imgs if type=="fruit" else sweets_imgs),
@@ -55,10 +89,13 @@ def get_object(type="fruit"):
             "y" : margin,
             "speed" : 5,
             #liczy punkty, 1=owoc, -1=cukierek
-            "points": 1 if type=="fruit" else -1}
+            "points": 1 if type=="fruit" else -1}'''
 
-#lista spadających cukierków i owoców, pierwszy spada owoc
-objects = [get_object("fruit")]
+
+'''#lista spadających cukierków i owoców, pierwszy spada owoc
+objects = [get_object("fruit")]'''
+
+objects = moving_objects()
 
 new_object_time = 0
 move_object_time = 0
@@ -95,12 +132,12 @@ while running:
         active_player.x = screen_width-2*margin
 
     # przesuniecie wozka
-    screen.blit(active_player.image, (active_player.x,active_player.y))
+    screen.blit(active_player.image,(active_player.x,active_player.y))
 
     # losowosc renderowania owocow i cukierkow
     if new_object_time == 750:
         type = bool(random.getrandbits(1))
-        objects.append(get_object("fruit" if type else "sweet"))
+        objects.append(get_object)
         new_object_time = 0
 
     # co ile spadaja owoce i cukierki
@@ -112,13 +149,13 @@ while running:
     lost = []
 
     #renderuje owoce i cukierki
-    for i, object in enumerate(objects):
+    for i in range(4):
         # przesuwa owoce i cukierki
         if move_object:
-            object["y"] += object["speed"]
-        screen.blit(object["image"], (object["x"], object["y"]))
+            objects.y += objects.speed
+        screen.blit(objects.get_object,(objects.x, objects.y))
         # rejestruje obiekty poza oknem gry
-        if object["y"] >= screen_height:
+        if objects.y >= screen_height:
             lost.append(i)
 
     # usuwa owoce i cukierki, ktore sa poza ekranem z listy
@@ -130,14 +167,6 @@ while running:
 
     # zapobiega dalszemu przesuwaniu sie owocow i cukierkow
     move_object = False
-
-
-    # inkrementacja czasu liczników
-    new_object_time += 1
-    move_object_time += 1
-
-    pygame.display.update()
-pygame.quit()
 
 
     # inkrementacja czasu liczników
