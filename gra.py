@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 pygame.init()
 pygame.display.set_caption("Cupola")
@@ -39,6 +40,8 @@ class Player:
     #definicja do zmieniania wartości speed playera
     def speed_change(self, change):
         self.speed += change
+
+
 
 #utworzony gracz z klasy
 active_player = Player()
@@ -123,7 +126,6 @@ while running:
     elif life <= 0:
         screen.blit(life_0, (590,88))
         life = 0
-        move_object = False
 
     # punktacja - wyświetlanie zdobytych punktów
     score_text = font.render("SCORE: " + str(points), 1,(239,243,255))
@@ -131,6 +133,36 @@ while running:
     #wyświetlanie punktów statusu życia
     life_text = font.render(str(life), 1,(239,243,255))
     screen.blit(life_text, (650,100))
+
+    #dodanie przyspieszenia gracza i zwolnienia po stracie życia
+    if points >= 6:
+        active_player.speed = 0.7
+    if points >= 10:
+        active_player.speed = 0.8
+    if points >= 15:
+        active_player.speed = 0.9
+    if points >= 20:
+        active_player.speed = 1
+    if points >= 25:
+        active_player.speed = 1.2
+    if life <= 0:
+        active_player.speed = 0.1
+
+#dodanie przyspieszenia spadania obiektów i zwolnienia po utracie życia
+    if points >= 6:
+        object.speed = 6
+    if points >= 13:
+        object.speed = 7
+    if points >= 20:
+        object.speed = 8
+    if points >= 25:
+        object.speed = 9
+    if points >= 30:
+        object.speed = 10
+    if points >= 35:
+        object.speed = 11
+    if life <= 0:
+        object.speed = 1
 
 #poruszanie się wózkiem- reakcja na klawisze
     for event in pygame.event.get():
@@ -194,9 +226,11 @@ while running:
             if object.type == "apple" or object.type == "banana":
                 if life > 0:
                     points += 1
-            #odejmuje życia po złapaniu słodyczy
             else:
                 life -= 1
+                #wstrzymuje obraz gry po złapaniu cukierka i utracie punktu
+                time.sleep(0.3)
+
 
 
 
