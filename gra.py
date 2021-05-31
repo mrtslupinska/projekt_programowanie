@@ -12,13 +12,16 @@ margin = 50
 screen = pygame.display.set_mode((screen_width, screen_height))
 font = pygame.font.Font(pygame.font.get_default_font(), 30)
 
-background = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/lidl.jpg')
+background = pygame.image.load('lidl.jpg')
 
+#stworzenie punktacji i życia
+points = 0
+life = 5
 
 #klasy player
 class Player:
     def __init__(self):
-        self.image = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/trolley.png')
+        self.image = pygame.image.load('trolley.png')
         #obecna lokalizacja wozka i to ze pojawia sie na srodku na poczatku gry
         self.x = (screen_width-100)/2
         self.y = screen_height-2*margin
@@ -40,9 +43,16 @@ class Player:
 #utworzony gracz z klasy
 active_player = Player()
 
-fruit_paths = ['/Users/bogna/Desktop/programowanie/gra/apple.png', '/Users/bogna/Desktop/programowanie/gra/banana.png']
-sweets_paths = ['/Users/bogna/Desktop/programowanie/gra/candy1.png', '/Users/bogna/Desktop/programowanie/gra/candy2.png']
+fruit_paths = ['apple.png', 'banana.png']
+sweets_paths = ['candy1.png', 'candy2.png']
 
+#utworzenie ścieżek obrazków do statusu życia
+life_5 = pygame.image.load('heart55.png')
+life_4 = pygame.image.load('heart44.png')
+life_3 = pygame.image.load('heart33.png')
+life_2 = pygame.image.load('heart22.png')
+life_1 = pygame.image.load('heart11.png')
+life_0 = pygame.image.load('heart00.png')
 
 #lista wgranych obrazkow
 fruit_imgs = [[path, pygame.image.load(path)] for path in fruit_paths]
@@ -81,7 +91,7 @@ object = MovingObject()
         return True
     else:
         return False'''
-    
+
 
 #lista spadających cukierków i owoców, pierwszy spada owoc
 objects = []
@@ -99,6 +109,30 @@ while running:
 
     screen.blit(background, (0, 0))
 
+    #dodanie grafik odpowiadających punktom życia
+    if life == 5:
+        screen.blit(life_5, (590,88))
+    elif life == 4:
+        screen.blit(life_4, (590,88))
+    elif life == 3:
+        screen.blit(life_3, (590,88))
+    elif life == 2:
+        screen.blit(life_2, (590,88))
+    elif life == 1:
+        screen.blit(life_1, (590,88))
+    elif life <= 0:
+        screen.blit(life_0, (590,88))
+        life = 0
+        move_object = False
+
+    # punktacja - wyświetlanie zdobytych punktów
+    score_text = font.render("SCORE: " + str(points), 1,(239,243,255))
+    screen.blit(score_text, (600,50))
+    #wyświetlanie punktów statusu życia
+    life_text = font.render(str(life), 1,(239,243,255))
+    screen.blit(life_text, (650,100))
+
+#poruszanie się wózkiem- reakcja na klawisze
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -138,8 +172,6 @@ while running:
     #obiekty, ktore sa poza oknem gry
     lost = []
     chaught_objects = []
-    #nie mogą być tak zdefinionwe punkty, bo je ciągle zeruje
-    points = 0
 
     #renderuje owoce i cukierki
     for i, object in enumerate(objects):
@@ -157,12 +189,16 @@ while running:
         if distance <= 550:
             lost.append(i)
             chaught_objects.append(i)
-            #dodaje lub odejmuje punkty odpowiednio dla typu
+            #dodaje punkty po złapaniu owocków
+            #i zabezpiecza przed dodawaniem punktów po utracie żyć
             if object.type == "apple" or object.type == "banana":
-                points += 1
+                if life > 0:
+                    points += 1
+            #odejmuje życia po złapaniu słodyczy
             else:
-                points += -1
-        
+                life -= 1
+
+
 
     # usuwa owoce i cukierki, ktore sa poza ekranem z listy
     new_objects = []
@@ -184,6 +220,8 @@ while running:
     # inkrementacja czasu liczników
     new_object_time += 1
     move_object_time += 1
+
+
 
     pygame.display.update()
 pygame.quit()
