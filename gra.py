@@ -1,19 +1,98 @@
-import pygame
+import pygame, sys
+from pygame.locals import *
 import random
 import time
 
 pygame.init()
 pygame.display.set_caption("Cupola")
+pygame.mixer.music.load('music_zapsplat_game_music_arcade_electro_repeating_retro_arp_electro_drums_serious_012.mp3')
+pygame.mixer.music.play(-1)
+pos_effect = pygame.mixer.Sound('zapsplat_cartoon_musical_riff_cheeky_electric_piano_fast_ascend_66411.mp3')
+neg_effect = pygame.mixer.Sound('zapsplat_cartoon_musical_riff_cheeky_electric_piano_descend_66410.mp3')
+end_effect = pygame.mixer.Sound('zapsplat_cartoon_descend_med_fast_dual_tone_mallets_002_47930.mp3')
+# music and sounds from Zapsplat.com
 
 screen_width = 900
 screen_height = 500
 #boki ekranu gry - czyli 500-50
 margin = 50
+mouse = pygame.mouse.get_pos()
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 font = pygame.font.Font(pygame.font.get_default_font(), 30)
+end_font = pygame.font.Font(None, 100)
+start_font = pygame.font.Font(None, 80)
+
+# oznaczenia kolorow
+BLACK = (0,0,0)
+PURPLE = (128,0,128)
+colour = PURPLE
+FUCHSIA = (255,0,255)
+NAVYBLUE = (0,0,128)
+BLUE = (0,0,255)
+RED = (255,0,0)
+RED_1 = (260,0,0)
+BLUE_1 = (0,0,170)
+
 
 background = pygame.image.load('lidl.jpg')
+
+# wybor opcji przed gra
+text = start_font.render('QUIT' , True , colour)
+text_1 = start_font.render('PLAY' , True , colour)
+instruction = pygame.image.load('Instruction.png')
+
+# Przycisk PLAY, nie ma na razie zadnej funkcji, nie wiem jak wywolac nim gre i
+# czy czesc z przyciskami moze byc w takiej formie, zeby gra sie odpalila trzeba
+# dezaktywowac(?) kod od linijki 49 do 83.
+
+while True:
+
+    for event in pygame.event.get():
+
+        # sprawdza czy klikamy
+        if event.type == pygame.MOUSEBUTTONDOWN:
+
+            # konkretne dzialnie w zaleznosci od kliknietej opcji
+            if 200 <= mouse[0] <= 350 and 400 <= mouse[1] <= 460:
+                pygame.quit()
+            elif 600 <= mouse[0] <= 750 and 400 <= mouse[1] <= 460:
+                False
+                # POMOCY :(
+
+    # wypelnienie tla
+    screen.fill((0,0,0))
+    # dodanie obrazka z instrukcja
+    screen.blit(instruction, (40,40))
+    # sprawdzenie pozycji kursora 
+    mouse = pygame.mouse.get_pos()
+
+    # zmaina koloru przycisku w zaleznosci od pozycji kursora
+    if 200 <= mouse[0] <= 350 and 400 <= mouse[1] <= 460:
+        pygame.draw.rect(screen, BLUE_1, (200,400,150,60))
+    elif 600 <= mouse[0] <= 750 and 400 <= mouse[1] <= 460:
+        pygame.draw.rect(screen, BLUE_1, (600,400,150,60))
+    else:
+        pygame.draw.rect(screen, BLUE, (200,400,150,60))
+        pygame.draw.rect(screen, BLUE, (600,400,150,60))
+
+    # wyswietlenie tekstu na przyciskach
+    screen.blit(text , (220,400))
+    screen.blit(text_1, (620,400))
+
+    pygame.display.update()
+    
+# funkcja specjalnego efektu tekstu
+def display_text_animation(string):
+    text = ''
+    for char in range(len(string)):
+        screen.fill((0,0,0))
+        text += string[char]
+        chosen_text = end_font.render(text, True, (colour))
+        text_rect = chosen_text.get_rect(center = (screen_width/2, screen_height/2))
+        screen.blit(chosen_text, text_rect)
+        pygame.display.update()
+        pygame.time.wait(200)
 
 #stworzenie punktacji i życia
 points = 0
@@ -46,8 +125,8 @@ class Player:
 #utworzony gracz z klasy
 active_player = Player()
 
-fruit_paths = ['apple.png', 'banana.png']
-sweets_paths = ['candy1.png', 'candy2.png']
+fruit_paths = ['apple.png', 'banana.png', 'pear.png', 'orange.png']
+sweets_paths = ['candy1.png', 'candy2.png', 'candy.png', 'candy-2.png']
 
 #utworzenie ścieżek obrazków do statusu życia
 life_5 = pygame.image.load('heart55.png')
@@ -147,6 +226,13 @@ while running:
         active_player.speed = 1.2
     if life <= 0:
         active_player.speed = 0.1
+        # zmiana dzwiekow po przegraniu
+        pygame.mixer.music.stop()
+        end_effect.play()
+        # ekran koncowy
+        display_text_animation('GAME OVER')
+        pygame.time.wait(600)
+        pygame.quit()
 
 #dodanie przyspieszenia spadania obiektów i zwolnienia po utracie życia
     if points >= 6:
@@ -223,13 +309,17 @@ while running:
             chaught_objects.append(i)
             #dodaje punkty po złapaniu owocków
             #i zabezpiecza przed dodawaniem punktów po utracie żyć
-            if object.type == "apple" or object.type == "banana":
+            if object.type == "apple" or object.type == "banana" or object.type == 'pear' or object.type == 'orange':
                 if life > 0:
                     points += 1
+                    # odtwarza dany efekt dzwiekowy po zlapaniu owocu
+                    pos_effect.play()
             else:
                 life -= 1
                 #wstrzymuje obraz gry po złapaniu cukierka i utracie punktu
                 time.sleep(0.3)
+                # odtwarza dany efekt dzwiekowy po zlapaniu cukierka
+                neg_effect.play()
 
 
 
