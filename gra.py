@@ -46,7 +46,8 @@ instruction = pygame.image.load('Instruction.png')
 # czy czesc z przyciskami moze byc w takiej formie, zeby gra sie odpalila trzeba
 # dezaktywowac(?) kod od linijki 49 do 83.
 
-while True:
+loop = True
+while loop:
 
     for event in pygame.event.get():
 
@@ -56,9 +57,10 @@ while True:
             # konkretne dzialnie w zaleznosci od kliknietej opcji
             if 200 <= mouse[0] <= 350 and 400 <= mouse[1] <= 460:
                 pygame.quit()
+                running = False
+                sys.exit()
             elif 600 <= mouse[0] <= 750 and 400 <= mouse[1] <= 460:
-                False
-                # POMOCY :(
+                loop = False
 
     # wypelnienie tla
     screen.fill((0,0,0))
@@ -233,6 +235,8 @@ while running:
         display_text_animation('GAME OVER')
         pygame.time.wait(600)
         pygame.quit()
+        running = False
+        sys.exit()
 
 #dodanie przyspieszenia spadania obiektów i zwolnienia po utracie życia
     if points >= 6:
