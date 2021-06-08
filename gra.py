@@ -67,6 +67,7 @@ while loop:
     # dodanie obrazka z instrukcja
     screen.blit(instruction, (40,40))
     # sprawdzenie pozycji kursora 
+    pygame.init()
     mouse = pygame.mouse.get_pos()
 
     # zmaina koloru przycisku w zaleznosci od pozycji kursora
