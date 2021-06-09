@@ -66,7 +66,7 @@ while loop:
     screen.fill((0,0,0))
     # dodanie obrazka z instrukcja
     screen.blit(instruction, (40,40))
-    # sprawdzenie pozycji kursora 
+    # sprawdzenie pozycji kursora
     pygame.init()
     mouse = pygame.mouse.get_pos()
 
@@ -84,7 +84,7 @@ while loop:
     screen.blit(text_1, (620,400))
 
     pygame.display.update()
-    
+
 # funkcja specjalnego efektu tekstu
 def display_text_animation(string):
     text = ''
@@ -97,9 +97,15 @@ def display_text_animation(string):
         pygame.display.update()
         pygame.time.wait(200)
 
+
 #stworzenie punktacji i życia
 points = 0
 life = 5
+apple_points = 0
+banana_points = 0
+pear_points = 0
+orange_points = 0
+
 
 #klasy player
 class Player:
@@ -132,12 +138,14 @@ fruit_paths = ['apple.png', 'banana.png', 'pear.png', 'orange.png']
 sweets_paths = ['candy1.png', 'candy2.png', 'candy.png', 'candy-2.png']
 
 #utworzenie ścieżek obrazków do statusu życia
+life_max = pygame.image.load('strong6.png')
 life_5 = pygame.image.load('heart55.png')
 life_4 = pygame.image.load('heart44.png')
 life_3 = pygame.image.load('heart33.png')
 life_2 = pygame.image.load('heart22.png')
 life_1 = pygame.image.load('heart11.png')
 life_0 = pygame.image.load('heart00.png')
+life00 = pygame.image.load('yayy.png')
 
 #lista wgranych obrazkow
 fruit_imgs = [[path, pygame.image.load(path)] for path in fruit_paths]
@@ -195,6 +203,8 @@ while running:
     screen.blit(background, (0, 0))
 
     #dodanie grafik odpowiadających punktom życia
+    if life > 5:
+        screen.blit(life_max, (590,88))
     if life == 5:
         screen.blit(life_5, (590,88))
     elif life == 4:
@@ -207,6 +217,7 @@ while running:
         screen.blit(life_1, (590,88))
     elif life <= 0:
         screen.blit(life_0, (590,88))
+        screen.blit(life00, (300,150))
         life = 0
 
     # punktacja - wyświetlanie zdobytych punktów
@@ -224,11 +235,12 @@ while running:
     if points >= 15:
         active_player.speed = 0.9
     if points >= 20:
-        active_player.speed = 1
+        active_player.speed = 0.95
     if points >= 25:
-        active_player.speed = 1.2
+        active_player.speed = 1.1
     if life <= 0:
         active_player.speed = 0.1
+
         # zmiana dzwiekow po przegraniu
         pygame.mixer.music.stop()
         end_effect.play()
@@ -240,18 +252,20 @@ while running:
         sys.exit()
 
 #dodanie przyspieszenia spadania obiektów i zwolnienia po utracie życia
-    if points >= 6:
-        object.speed = 6
-    if points >= 13:
+    if points >= 4:
         object.speed = 7
-    if points >= 20:
+    if points >= 6:
         object.speed = 8
-    if points >= 25:
+    if points >= 13:
         object.speed = 9
-    if points >= 30:
+    if points >= 20:
         object.speed = 10
-    if points >= 35:
+    if points >= 25:
         object.speed = 11
+    if points >= 30:
+        object.speed = 12
+    if points >= 35:
+        object.speed = 13
     if life <= 0:
         object.speed = 1
 
@@ -319,6 +333,41 @@ while running:
                     points += 1
                     # odtwarza dany efekt dzwiekowy po zlapaniu owocu
                     pos_effect.play()
+            #funkcja magiczna, liczy punkty dla każdego owocka i daje extra 3 punkty za złapanie 7 owoców z danego rodzaju, co dodaje też jedno extra życie
+
+                    if object.type == "apple":
+                        apple_points +=1
+                        if apple_points == 7:
+                            points += 3
+                            life +=1
+                        if apple_points > 7:
+                            apple_points = 0
+
+
+                    if object.type == "banana":
+                        banana_points +=1
+                        if banana_points == 7:
+                            points += 3
+                            life += 1
+                        if banana_points >7:
+                            banana_points = 0
+
+                    if object.type == "pear":
+                        pear_points +=1
+                        if pear_points == 7:
+                            points += 3
+                            life += 1
+                        if pear_points >7:
+                            pear_points = 0
+
+                    if object.type == "orange":
+                        orange_points +=1
+                        if orange_points == 7:
+                            points += 3
+                            life += 1
+                        if orange_points >7:
+                            orange_points = 0
+
             else:
                 life -= 1
                 #wstrzymuje obraz gry po złapaniu cukierka i utracie punktu
