@@ -10,6 +10,7 @@ pygame.mixer.music.play(-1)
 pos_effect = pygame.mixer.Sound('zapsplat_cartoon_musical_riff_cheeky_electric_piano_fast_ascend_66411.mp3')
 neg_effect = pygame.mixer.Sound('zapsplat_cartoon_musical_riff_cheeky_electric_piano_descend_66410.mp3')
 end_effect = pygame.mixer.Sound('zapsplat_cartoon_descend_med_fast_dual_tone_mallets_002_47930.mp3')
+magic_effect = pygame.mixer.Sound('zapsplat_fantasy_magic_glissando_90s_style_dreamy_ascend_006_64936.mp3')
 # music and sounds from Zapsplat.com
 
 screen_width = 900
@@ -97,6 +98,15 @@ def display_text_animation(string):
         pygame.display.update()
         pygame.time.wait(200)
 
+# funkcja wyswietlajaca wynik koncowy
+def end_screen():
+    screen.fill((0,0,0))
+    score_text_2 = end_font.render('YOUR SCORE: '  +  str(points), 1, colour)
+    screen.blit(score_text_2, (150, 350))
+    screen.blit(life_0, (590,88))
+    screen.blit(life00, (300,50))
+    pygame.display.update()
+    pygame.time.wait(4000)
 
 #stworzenie punktacji i życia
 points = 0
@@ -217,8 +227,7 @@ while running:
         screen.blit(life_1, (590,88))
     elif life <= 0:
         screen.blit(life_0, (590,88))
-        screen.blit(life00, (300,150))
-        life = 0
+    
 
     # punktacja - wyświetlanie zdobytych punktów
     score_text = font.render("SCORE: " + str(points), 1,(239,243,255))
@@ -240,7 +249,8 @@ while running:
         active_player.speed = 1.1
     if life <= 0:
         active_player.speed = 0.1
-
+        # wyswietlenie wyniku koncowego
+        end_screen()
         # zmiana dzwiekow po przegraniu
         pygame.mixer.music.stop()
         end_effect.play()
@@ -333,11 +343,14 @@ while running:
                     points += 1
                     # odtwarza dany efekt dzwiekowy po zlapaniu owocu
                     pos_effect.play()
-            #funkcja magiczna, liczy punkty dla każdego owocka i daje extra 3 punkty za złapanie 7 owoców z danego rodzaju, co dodaje też jedno extra życie
-
+                    
+#funkcja magiczna, liczy punkty dla każdego owocka i daje extra 3 punkty
+#za złapanie 7 owoców z danego rodzaju, co dodaje też jedno extra życie
+#oraz odtwarza dany dzwiek
                     if object.type == "apple":
                         apple_points +=1
                         if apple_points == 7:
+                            magic_effect.play()
                             points += 3
                             life +=1
                         if apple_points > 7:
@@ -347,6 +360,7 @@ while running:
                     if object.type == "banana":
                         banana_points +=1
                         if banana_points == 7:
+                            magic_effect.play()
                             points += 3
                             life += 1
                         if banana_points >7:
@@ -355,6 +369,7 @@ while running:
                     if object.type == "pear":
                         pear_points +=1
                         if pear_points == 7:
+                            magic_effect.play()
                             points += 3
                             life += 1
                         if pear_points >7:
@@ -363,6 +378,7 @@ while running:
                     if object.type == "orange":
                         orange_points +=1
                         if orange_points == 7:
+                            magic_effect.play()
                             points += 3
                             life += 1
                         if orange_points >7:
