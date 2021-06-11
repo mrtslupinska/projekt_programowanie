@@ -5,13 +5,14 @@ import time
 
 pygame.init()
 pygame.display.set_caption("Cupola")
-pygame.mixer.music.load('music_zapsplat_game_music_arcade_electro_repeating_retro_arp_electro_drums_serious_012.mp3')
+pygame.mixer.music.load('/Users/bogna/Desktop/programowanie/gra/music_zapsplat_game_music_arcade_electro_repeating_retro_arp_electro_drums_serious_012.mp3')
 pygame.mixer.music.play(-1)
-pos_effect = pygame.mixer.Sound('zapsplat_cartoon_musical_riff_cheeky_electric_piano_fast_ascend_66411.mp3')
-neg_effect = pygame.mixer.Sound('zapsplat_cartoon_musical_riff_cheeky_electric_piano_descend_66410.mp3')
-end_effect = pygame.mixer.Sound('zapsplat_cartoon_descend_med_fast_dual_tone_mallets_002_47930.mp3')
-magic_effect = pygame.mixer.Sound('zapsplat_fantasy_magic_glissando_90s_style_dreamy_ascend_006_64936.mp3')
-# music and sounds from Zapsplat.com
+pos_effect = pygame.mixer.Sound('/Users/bogna/Desktop/programowanie/gra/zapsplat_cartoon_musical_riff_cheeky_electric_piano_fast_ascend_66411.mp3')
+neg_effect = pygame.mixer.Sound('/Users/bogna/Desktop/programowanie/gra/zapsplat_cartoon_musical_riff_cheeky_electric_piano_descend_66410.mp3')
+end_effect = pygame.mixer.Sound('/Users/bogna/Desktop/programowanie/gra/zapsplat_cartoon_descend_med_fast_dual_tone_mallets_002_47930.mp3')
+magic_effect = pygame.mixer.Sound('/Users/bogna/Desktop/programowanie/gra/zapsplat_fantasy_magic_glissando_90s_style_dreamy_ascend_006_64936.mp3')
+smash_effect = pygame.mixer.Sound('/Users/bogna/Desktop/programowanie/gra/soundible_drop.mp3')
+# music and sounds from Zapsplat.com ans soundible
 
 screen_width = 900
 screen_height = 500
@@ -36,12 +37,12 @@ RED_1 = (260,0,0)
 BLUE_1 = (0,0,170)
 
 
-background = pygame.image.load('lidl.jpg')
+background = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/lidl.jpg')
 
 # wybor opcji przed gra
 text = start_font.render('QUIT' , True , colour)
 text_1 = start_font.render('PLAY' , True , colour)
-instruction = pygame.image.load('Instruction.png')
+instruction = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/Instruction.png')
 
 # Przycisk PLAY, nie ma na razie zadnej funkcji, nie wiem jak wywolac nim gre i
 # czy czesc z przyciskami moze byc w takiej formie, zeby gra sie odpalila trzeba
@@ -108,8 +109,18 @@ def end_screen():
     pygame.display.update()
     pygame.time.wait(4000)
 
+# funkcja pokazująca +1/-0,1 na ekranie, gdy zdobędzie/straci się się punkt
+def show_added_points(points):
+    text = points
+    chosen_text = end_font.render(text, True, (255,255,255))
+    text_rect = chosen_text.get_rect(center = (screen_width/2, screen_height/2))
+    screen.blit(chosen_text, text_rect)
+    pygame.display.update()
+    pygame.time.wait(150)
+
+
 #stworzenie punktacji i życia
-points = 0
+points = round(0,2)
 life = 5
 apple_points = 0
 banana_points = 0
@@ -120,7 +131,7 @@ orange_points = 0
 #klasy player
 class Player:
     def __init__(self):
-        self.image = pygame.image.load('trolley.png')
+        self.image = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/trolley.png')
         #obecna lokalizacja wozka i to ze pojawia sie na srodku na poczatku gry
         self.x = (screen_width-100)/2
         self.y = screen_height-2*margin
@@ -144,18 +155,24 @@ class Player:
 #utworzony gracz z klasy
 active_player = Player()
 
-fruit_paths = ['apple.png', 'banana.png', 'pear.png', 'orange.png']
-sweets_paths = ['candy1.png', 'candy2.png', 'candy.png', 'candy-2.png']
+fruit_paths = ['/Users/bogna/Desktop/programowanie/gra/apple.png',
+'/Users/bogna/Desktop/programowanie/gra/banana.png',
+'/Users/bogna/Desktop/programowanie/gra/pear.png',
+'/Users/bogna/Desktop/programowanie/gra/orange.png']
+sweets_paths = ['/Users/bogna/Desktop/programowanie/gra/candy1.png',
+'/Users/bogna/Desktop/programowanie/gra/candy2.png',
+'/Users/bogna/Desktop/programowanie/gra/candy.png',
+'/Users/bogna/Desktop/programowanie/gra/candy-2.png']
 
 #utworzenie ścieżek obrazków do statusu życia
-life_max = pygame.image.load('strong6.png')
-life_5 = pygame.image.load('heart55.png')
-life_4 = pygame.image.load('heart44.png')
-life_3 = pygame.image.load('heart33.png')
-life_2 = pygame.image.load('heart22.png')
-life_1 = pygame.image.load('heart11.png')
-life_0 = pygame.image.load('heart00.png')
-life00 = pygame.image.load('yayy.png')
+life_max = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/strong6.png')
+life_5 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/heart55.png')
+life_4 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/heart44.png')
+life_3 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/heart33.png')
+life_2 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/heart22.png')
+life_1 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/heart11.png')
+life_0 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/heart00.png')
+life00 = pygame.image.load('/Users/bogna/Desktop/programowanie/gra/yayy.png')
 
 #lista wgranych obrazkow
 fruit_imgs = [[path, pygame.image.load(path)] for path in fruit_paths]
@@ -185,15 +202,6 @@ class MovingObject:
         return self.y
 
 object = MovingObject()
-
-#sprawdzanie kolizji obiektu z wózkiem
-'''def Collision(object_x,object_y,trolley_x,trolley_y):
-    distance = ((object_x - trolley_x)**2 +
-    (object_y - trolley_y)**2)**1/2
-    if distance <= 550:
-        return True
-    else:
-        return False'''
 
 
 #lista spadających cukierków i owoców, pierwszy spada owoc
@@ -227,10 +235,10 @@ while running:
         screen.blit(life_1, (590,88))
     elif life <= 0:
         screen.blit(life_0, (590,88))
-    
+
 
     # punktacja - wyświetlanie zdobytych punktów
-    score_text = font.render("SCORE: " + str(points), 1,(239,243,255))
+    score_text = font.render("SCORE: " + str(round(points,2)), 1,(239,243,255))
     screen.blit(score_text, (600,50))
     #wyświetlanie punktów statusu życia
     life_text = font.render(str(life), 1,(239,243,255))
@@ -341,9 +349,10 @@ while running:
             if object.type == "apple" or object.type == "banana" or object.type == 'pear' or object.type == 'orange':
                 if life > 0:
                     points += 1
+                    show_added_points('+1')
                     # odtwarza dany efekt dzwiekowy po zlapaniu owocu
                     pos_effect.play()
-                    
+
 #funkcja magiczna, liczy punkty dla każdego owocka i daje extra 3 punkty
 #za złapanie 7 owoców z danego rodzaju, co dodaje też jedno extra życie
 #oraz odtwarza dany dzwiek
@@ -391,7 +400,13 @@ while running:
                 # odtwarza dany efekt dzwiekowy po zlapaniu cukierka
                 neg_effect.play()
 
-
+    #odejmuje 0,1 punkta, gdy nie złapiemy owoców
+    for i, object in enumerate(objects):
+        if i in lost and i not in chaught_objects:
+            if object.type == "apple" or object.type == "banana" or object.type == 'pear' or object.type == 'orange':
+                points += - 0.1
+                smash_effect.play()
+                show_added_points('-0.1')
 
 
     # usuwa owoce i cukierki, ktore sa poza ekranem z listy
@@ -401,11 +416,6 @@ while running:
               new_objects.append(object)
     objects = new_objects
 
-
-    '''if object in chaught_objects:
-        screen.blit(object.img, (830, 50))'''
-
-    #wyświetla złapane obiekty z boku
 
     # zapobiega dalszemu przesuwaniu sie owocow i cukierkow
     move_object = False
