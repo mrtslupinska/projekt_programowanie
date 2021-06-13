@@ -144,6 +144,8 @@ class Player:
         self.y = screen_height-2*margin
         #predkosc z jaka porusza sie wozek
         self.speed = 0.5
+        self.orientation = "right"
+        self.left_image = pygame.transform.flip(self.image, True, False)
 
     #definicja do zmieniania wartości x playera
     def place_x(self, change):
@@ -297,13 +299,17 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player_movement = -active_player.speed
+                active_player.orientation = "left"
             if event.key == pygame.K_RIGHT:
                 player_movement = active_player.speed
+                active_player.orientation = "right"
+
         if event.type == pygame.KEYUP:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                 player_movement = 0
 
     # aktualizacja polozenia wozka w poziomie
+
     active_player.place_x(player_movement)
 
     #wozek nie wyjezdza poza ekran
@@ -313,7 +319,11 @@ while running:
         active_player.x = (screen_width-100)-2*margin
 
     # przesuniecie wozka
-    screen.blit(active_player.image, (active_player.x, active_player.y))
+    if active_player.orientation == "left":
+        screen.blit(active_player.left_image, (active_player.x, active_player.y))
+    else:
+        screen.blit(active_player.image, (active_player.x, active_player.y))
+
 
     # losowosc renderowania owocow i cukierkow
     if new_object_time == 750:
