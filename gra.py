@@ -102,7 +102,7 @@ def display_text_animation(string):
 # funkcja wyswietlajaca wynik koncowy
 def end_screen():
     screen.fill((0,0,0))
-    score_text_2 = end_font.render('YOUR SCORE: '  +  str(points), 1, colour)
+    score_text_2 = end_font.render('YOUR SCORE: '  +  str(points), True, colour)
     screen.blit(score_text_2, (150, 350))
     screen.blit(life_0, (590,88))
     screen.blit(life00, (300,50))
@@ -111,12 +111,19 @@ def end_screen():
 
 # funkcja pokazująca +1/-0,1 na ekranie, gdy zdobędzie/straci się się punkt
 def show_added_points(points):
+
     text = points
     chosen_text = end_font.render(text, True, (255,255,255))
     text_rect = chosen_text.get_rect(center = (850, 200))
     screen.blit(chosen_text, text_rect)
     pygame.display.update()
     pygame.time.wait(150)
+
+def collision(object, player):
+    distance1 = ((object.x - (player.x + 50)) ** 2 + (object.y - (player.y)) ** 2) ** (1 / 2)
+    distance2 = ((object.x - (player.x)) ** 2 + (object.y - (player.y)) ** 2) ** (1 / 2)
+    return distance1 <= 25 or distance2 <= 25
+
 
 
 #stworzenie punktacji i życia
@@ -193,7 +200,7 @@ class MovingObject:
     def x(self):
         return self.x
 
-    def y():
+    def y(self):
         return self.y
 
 object = MovingObject()
@@ -236,7 +243,7 @@ while running:
     score_text = font.render("SCORE: " + str(round(points,2)), 1,(239,243,255))
     screen.blit(score_text, (600,50))
     #wyświetlanie punktów statusu życia
-    life_text = font.render(str(life), 1,(239,243,255))
+    life_text = font.render(str(life), True,(239,243,255))
     screen.blit(life_text, (650,100))
 
     #dodanie przyspieszenia gracza i zwolnienia po stracie życia
@@ -306,7 +313,7 @@ while running:
         active_player.x = (screen_width-100)-2*margin
 
     # przesuniecie wozka
-    screen.blit(active_player.image, (active_player.x,active_player.y))
+    screen.blit(active_player.image, (active_player.x, active_player.y))
 
     # losowosc renderowania owocow i cukierkow
     if new_object_time == 750:
@@ -333,14 +340,12 @@ while running:
         if object.y >= screen_height:
             lost.append(i)
 
-        #sprawdza, czy następuje kolizja i usuwa złapany obiekt
-        #(nwm czemu to samo jako def nie działa)
-        distance = ((object.x - active_player.x)**2 + (object.y - active_player.y)**2)**1/2
-        if distance <= 550:
+        # sprawdza, czy następuje kolizja i usuwa złapany obiekt
+        if collision(object, active_player):
             chaught_objects.append(i)
             screen.blit(object.img, (830, 250))
-            #dodaje punkty po złapaniu owocków
-            #i zabezpiecza przed dodawaniem punktów po utracie żyć
+            # dodaje punkty po złapaniu owocków
+            # i zabezpiecza przed dodawaniem punktów po utracie żyć
             if object.type == "apple" or object.type == "banana" or object.type == 'pear' or object.type == 'orange':
                 if life > 0:
                     points += 1
@@ -348,9 +353,9 @@ while running:
                     # odtwarza dany efekt dzwiekowy po zlapaniu owocu
                     pos_effect.play()
 
-#funkcja magiczna, liczy punkty dla każdego owocka i daje extra 3 punkty
-#za złapanie 7 owoców z danego rodzaju, co dodaje też jedno extra życie
-#oraz odtwarza dany dzwiek
+# funkcja magiczna, liczy punkty dla każdego owocka i daje extra 3 punkty
+# za złapanie 7 owoców z danego rodzaju, co dodaje też jedno extra życie
+# oraz odtwarza dany dzwiek
                     if object.type == "apple":
                         apple_points +=1
                         if apple_points == 7:
